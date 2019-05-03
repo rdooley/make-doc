@@ -3,8 +3,9 @@ SHELL=/bin/bash
 BUILD_DIR=build
 PROJECT_NAME=make-doc ## @build Project name
 DEFAULT_TARGET=$(BUILD_DIR)/$(PROJECT_NAME)
+MAKEFILE_LIST = Makefile
 
-.PHONY: clean build install
+.PHONY: clean build install help help-variables
 
 clean: ## @build Clean stuff
 		rm -rf $(BUILD_DIR)
@@ -16,5 +17,11 @@ build: ## @build Build the actual thing
 		# build for specific operating systems
 		BUILD_DIR=$(BUILD_DIR) PROJECT_NAME=$(PROJECT_NAME) ./build.sh "linux/amd64" "darwin/amd64"
 
-install: build
-	cp $(DEFAULT_TARGET) /usr/local/bin
+install: build ## @build Install make-doc to /usr/local/bin
+	sudo cp $(DEFAULT_TARGET) /usr/local/bin
+
+help: install ## @help show this help.
+	@make-doc $(MAKEFILE_LIST)
+
+help-variables: install ## @help show makefile customizable variables.
+	@make-doc $(MAKEFILE_LIST)

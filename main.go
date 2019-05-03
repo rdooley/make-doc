@@ -12,13 +12,13 @@ import (
 	"gopkg.in/alecthomas/kingpin.v2"
 )
 
-const version = "0.0.1"
+const version = "0.1.0"
 const targetRegex = `^((?P<name>(-|_|\w)+)|(\${(?P<varname>(-|_|\w)+)}))\s*:.*\#\#+\s*@(?P<category>(\w+))\s+(?P<doc>(.*))`
-const varRegex = `^(?P<name>(\w)+)\s*(\?)?=\s*(?P<default>([^\#]+))(\s+\#\#+\s*@(?P<category>(\w+))(:)?\s+(?P<doc>(.*))|\s*$)`
+const varRegex = `^(?P<name>(\w)+)\s*(\?)?=\s*(?P<def>([^\#]+))(\s+\#\#+\s*@(?P<category>(\w+))(:)?\s+(?P<doc>(.*))|\s*$)`
 
 var (
 	parseVars = kingpin.Flag("variables", "optional flag to parse variables").Bool()
-	makefiles = kingpin.Arg("makefiles", "path to makefiles").Required().ExistingFiles()
+	makefiles = kingpin.Arg("makefiles", "paths to makefiles").Required().ExistingFiles()
 	_         = kingpin.Version(version)
 
 	variables = VarInfo{}
@@ -111,6 +111,14 @@ func parseTargets(path string) {
 	}
 }
 
+func subVars() {
+	for _, rules := range targets {
+		for _, rule := range rules {
+			rule.name = variables[rule.name]
+		}
+	}
+}
+
 func printHelp(cats MakeTargets) {
 	var colSize int
 	for _, rules := range cats {
@@ -142,6 +150,7 @@ func main() {
 	if *parseVars {
 		printHelp(vargets)
 	} else {
+		subVars()
 		fmt.Println("Usage: make [target] [VARIABLE=value]")
 		printHelp(targets)
 	}
