@@ -146,7 +146,6 @@ func main() {
 	for _, m := range *makefiles {
 		parseTargets(m)
 	}
-	// subVariables()
 	if *parseVars {
 		printHelp(vargets)
 	} else {

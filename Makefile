@@ -10,7 +10,7 @@ MAKEFILE_LIST = Makefile
 clean: ## @build Clean stuff
 		rm -rf $(BUILD_DIR)
 
-build: ## @build Build the actual thing
+build $(DEFAULT_TARGET): ## @build Build the actual thing
 		mkdir -p $(BUILD_DIR)
 		# default build
 		go build -o $(DEFAULT_TARGET)
@@ -20,8 +20,8 @@ build: ## @build Build the actual thing
 install: build ## @build Install make-doc to /usr/local/bin
 	sudo cp $(DEFAULT_TARGET) /usr/local/bin
 
-help: install ## @help show this help.
+help: ## @help show this help
 	@make-doc $(MAKEFILE_LIST)
 
-help-variables: install ## @help show makefile customizable variables.
-	@make-doc $(MAKEFILE_LIST)
+help-variables: ## @help show makefile customizable variables
+	@make-doc $(MAKEFILE_LIST) --variables
